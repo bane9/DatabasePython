@@ -1,0 +1,15 @@
+{
+	"databases" : 3,
+	"database_column_names" : [
+		["a", "b"],
+		["q", "d", "e", "f"],
+		["w", "g", "h", "i"]
+	],
+	"search_combine_columns" : [
+		[0],
+		[0, 1],
+		[0, 1]
+	],
+	"type" : "serial",
+	"linked_file" : ""
+}
