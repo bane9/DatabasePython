@@ -6,7 +6,7 @@ class FileDataManager(DataManager):
     def __init__(self):
         super().__init__()
 
-    def add(self, val, db_index, allow_duplicates = True):
+    def add(self, val, db_index = 0):
         raise NotImplementedError()
 
     def _search(self, key, db_index = 0):
@@ -62,11 +62,16 @@ class FileDataManager(DataManager):
             key += self.data[db_index][row][x]
         return key
     
-    def search_all_keys(self, key):
+    def search_all_keys(self, key, db_index=-1):
         out = []
-        for x in self.data:
-            for y in x:
-                if y[0] == key:
-                    out.append(y)
+        if db_index == -1:
+            for x in self.data:
+                for y in x:
+                    if y[0] == key:
+                        out.append(y)
+        else:
+            for x in self.data[db_index]:
+                if x[0] == key:
+                    out.append(x)
         return out
     

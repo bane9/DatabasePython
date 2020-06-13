@@ -16,7 +16,9 @@ class DataDistributor:
         }
 
     def connect_to_sql(self, host, username, password):
-        pass
+        MySqlHandler.connect(host, username, password)
+        if type(self.db) is not DatabaseDataManager:
+            self.db = DatabaseDataManager()
 
     def load_file(self, metadata_filepath):
         metadata = None

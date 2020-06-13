@@ -1,37 +1,30 @@
 import mysql.connector
 
 class MySqlHandler:
-    __db = None
+    db = None
     __host = ""
     __username = ""
     __password = ""
+    schema = "uni_proj_189"
 
-    def __init__(self, hostname = "", user = "", passw = ""):
-        if hostname == "" or user == "" or passw == "": 
-            return
-        
-        self.connect(hostname, user, passw)
+    @staticmethod
+    def isConnected() -> bool:
+        if MySqlHandler.db is None: return False
+        else: return MySqlHandler.db.is_connected()
 
-    def isConnected(self) -> bool:
-        if MySqlHandler.__db is None: return False
-        else: return MySqlHandler.__db.is_connected()
+    @staticmethod
+    def dissconnect() -> None:
+        if MySqlHandler.isConnected():
+           MySqlHandler.db.dissconnect()
 
-    
-    def dissconnect(self) -> None:
-        if self.isConnected():
-           MySqlHandler.__db.dissconnect()
-
-    def connect(self, hostname : str, username : str, passw : str) -> None:
+    @staticmethod
+    def connect(hostname : str, username : str, passw : str) -> None:
         if MySqlHandler.__host == hostname and MySqlHandler.__username == username and MySqlHandler.__password == passw \
-            and self.isConnected():
+            and MySqlHandler.isConnected():
             return
         else:
-            MySqlHandler.__db = mysql.connector.connect(host=hostname, user=username, password=passw)
+            MySqlHandler.db = mysql.connector.connect(host=hostname, user=username, password=passw)
             MySqlHandler.__host = hostname
             MySqlHandler.__username = username
             MySqlHandler.__password = passw
 
-    def __call__(self):
-        if not self.isConnected():
-            raise Exception("Not connected")
-        else: return MySqlHandler.__db
