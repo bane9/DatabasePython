@@ -30,3 +30,6 @@ class DataManager:
 
     def load(self, metadata_filepath):
         pass
+
+    def get_all(self, db_index = 0):
+        raise NotImplementedError()

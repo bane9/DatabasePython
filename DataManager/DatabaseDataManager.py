@@ -89,3 +89,7 @@ class DatabaseDataManager(DataManager):
         cursor.execute(query)
         MySqlHandler.db.commit()
 
+    def get_all(self, db_index = 0):
+        cursor = MySqlHandler.db.cursor()
+        cursor.execute(f"SELECT * FROM {MySqlHandler.schema}.{self.metadata['database_names'][db_index]}")
+        return cursor.fetchall()

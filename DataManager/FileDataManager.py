@@ -87,3 +87,6 @@ class FileDataManager(DataManager):
         for x in self.metadata["search_combine_columns"][db_index]:
             key += list[x]
         return key
+
+    def get_all(self, db_index = 0):
+        return self.data[db_index]

@@ -5,8 +5,8 @@ from DataDistributor import DataDistributor
 
 data = DataDistributor()
 
-#data.new("sequential")
-data.connect_to_sql("127.0.0.1", "root", "pass")
+data.new("sequential")
+#data.connect_to_sql("127.0.0.1", "root", "pass")
 
 metadata = {
     "database_names" : [
@@ -30,7 +30,7 @@ metadata = {
 
 data.set_metadata(metadata)
 
-data.db.schema_init()
+#data.db.schema_init()
 
 student_tpl = [["222555666", "John Doe"]]
 passed_subject_tpl = [["222555666", "passed_subject_1", "silabus1", "10"], ["222555666", "passed_subject_2", "silabus1", "7"]]
@@ -60,3 +60,5 @@ data.db.modify(target, ["222555666", "passed_subject_1", "silabus3", "30"], inde
 print(data.db.get(target, index_no="222555666"))
 
 data.db.load("asd_metadata.json")
+
+print(data.db.get(target, index_no="222555666"))
