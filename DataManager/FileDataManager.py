@@ -16,7 +16,7 @@ class FileDataManager(DataManager):
         key = ""
         for x in kwargs.values():
             key += x
-        if len(kwargs) > 1:
+        if len(kwargs) > 1 or db_index == 0:
             idx = self._search(key, db_index)
             if idx is None:
                 raise ValueError("Key not in the database")
@@ -33,10 +33,10 @@ class FileDataManager(DataManager):
         key = ""
         for x in kwargs.values():
             key += x
-        newKey = self._search(value, db_index)
-        if self._search(newKey) is not None:
+        newKey = self._get_key_from_list(db_index, value)
+        if self._search(newKey, db_index) is not None and key != newKey:
             raise ValueError("Key already exists")
-        idx = self._search(key)
+        idx = self._search(key, db_index)
         if idx is not None:
             self.data[db_index][idx] = value
 
@@ -47,19 +47,21 @@ class FileDataManager(DataManager):
                 out.append(x)
         return out
 
-    def delete(self, key, db_index = 0):
-        '''
+    def delete(self, db_index, **kwargs):
         key = ""
         for x in kwargs.values():
             key += x
-        newKey = self._search(value, db_index)
-        if self._search(newKey) is not None:
-            raise ValueError("Key already exists")
-        idx = self._search(key)
-        if idx is not None:
-            self.data[db_index][idx] = value
-        '''
-        pass 
+        if len(kwargs) > 1 or db_index == 0:
+            idx = self._search(key, db_index)
+            if idx is not None:
+                self.data[db_index].pop(idx)
+        else:
+            i = 0
+            while i < len(self.data[db_index]):
+                if self.data[db_index][i][0] == key:
+                  self.data[db_index].pop(i)
+                else:
+                    i += 1  
 
     def save(self, path, name):
         filepath = path + name

@@ -15,9 +15,9 @@ class SequentialDataManager(FileDataManager):
 
     def _search(self, key, db_index = 0):
         start = 0
-        end = len(self.data[db_index])
+        end = len(self.data[db_index]) - 1
 
-        while start < end: 
+        while start <= end: 
             mid = start + (end - start) // 2
             search_key = self._getkey(db_index, mid)
             if search_key == key: return mid  

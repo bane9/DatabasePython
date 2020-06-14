@@ -27,9 +27,10 @@ metadata = {
     "schema_name" : "uni_proj"
 }
 
-#data.set_metadata(metadata)
 
-data.db.schema_init()
+data.set_metadata(metadata)
+
+#data.db.schema_init()
 
 student_tpl = [["222555666", "John Doe"]]
 passed_subject_tpl = [["222555666", "passed_subject_1", "silabus1", "10"], ["222555666", "passed_subject_2", "silabus1", "7"]]
@@ -46,9 +47,16 @@ for x in failed_subject_tpl:
 
 data.db.save("", "asd")
 
-print(data.db.get(2, index_no="222555666"))
+target = 1
 
-data.db.delete("222555666", 0)
+print(data.db.get(target, index_no="222555666"))
+
+data.db.delete(target, index_no="222555666", subject_name="passed_subject_2")
+
+print(data.db.get(target, index_no="222555666"))
+
+data.db.modify(target, ["222555666", "passed_subject_1", "silabus3", "30"], index_no="222555666", subject_name="passed_subject_1")
+
+print(data.db.get(target, index_no="222555666"))
 
 data.db.load("asd_metadata.json")
-
