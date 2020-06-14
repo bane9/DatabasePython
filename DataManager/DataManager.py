@@ -3,7 +3,7 @@ class DataManager:
     def __init__(self):
         self.data = []
         self.metadata = {
-            "databases" : 0,
+            "database_names" : [],
 	        "database_column_names" : [],
             "search_combine_columns" : [],
 	        "type" : "",
@@ -26,9 +26,6 @@ class DataManager:
         raise NotImplementedError()
 
     def _search(self, key, db_index = 0):
-        raise NotImplementedError()
-
-    def search_all_keys(self, key, db_index = 0):
         raise NotImplementedError()
 
     def save(self, path, name):

@@ -10,7 +10,7 @@ class DataDistributor:
     def __init__(self):
         self.db = None
         self.metadata = {
-            "databases" : 0,
+            "database_names" : [],
 	        "database_column_names" : [],
             "search_combine_columns" : []
         }
@@ -30,16 +30,18 @@ class DataDistributor:
             self.db = SequentialDataManager()
         self.db.metadata = metadata
         self.db.load_direct()
-        self.metadata["databases"] = metadata["databases"]
+        self.metadata["database_names"] = metadata["database_names"]
         self.metadata["database_column_names"] = metadata["database_column_names"]
 
     def set_metadata(self, metadata):
         if self.db:
-            self.db.metadata["databases"] = metadata["databases"]
+            self.db.metadata["database_names"] = metadata["database_names"]
             self.db.metadata["database_column_names"] = metadata["database_column_names"]
             self.db.metadata["search_combine_columns"] = metadata["search_combine_columns"]
-            for _ in range(metadata["databases"]):
+            for _ in range(len(metadata["database_names"])):
                 self.db.data.append([])
+            if "schema_name" in metadata:
+                MySqlHandler.schema = metadata["schema_name"]
         self.metadata = metadata
 
     def new(self, data_type):

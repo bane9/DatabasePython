@@ -12,19 +12,33 @@ class FileDataManager(DataManager):
     def _search(self, key, db_index = 0):
         raise NotImplementedError()
 
-    def get(self, key, db_index = 0):
-        idx = self._search(key, db_index)
-        if idx is None:
-            raise ValueError("Key not in the database")
-        return self.data[db_index][idx]
+    def get(self, db_index, **kwargs):
+        key = ""
+        for x in kwargs.values():
+            key += x
+        if len(kwargs) > 1:
+            idx = self._search(key, db_index)
+            if idx is None:
+                raise ValueError("Key not in the database")
+            return self.data[db_index][idx]
+        else:
+            out = []
+            for x in self.data[db_index]:
+                if x[0] == key:
+                    out.append(x)
+            return out
 
-    def modify(self, key, value, db_index = 0):
-        idx = self._search(key, db_index)
-        if idx is None:
-            raise ValueError("Key not in the database")
-        if self._search(value[0]) is not None:
+
+    def modify(self, db_index, value, **kwargs):
+        key = ""
+        for x in kwargs.values():
+            key += x
+        newKey = self._search(value, db_index)
+        if self._search(newKey) is not None:
             raise ValueError("Key already exists")
-        self.data[db_index][idx] = value
+        idx = self._search(key)
+        if idx is not None:
+            self.data[db_index][idx] = value
 
     def search(self, keypart, row_index = 0, db_index = 0):
         out = []
@@ -34,7 +48,18 @@ class FileDataManager(DataManager):
         return out
 
     def delete(self, key, db_index = 0):
-        self.data[db_index].pop(self._search(key, db_index))
+        '''
+        key = ""
+        for x in kwargs.values():
+            key += x
+        newKey = self._search(value, db_index)
+        if self._search(newKey) is not None:
+            raise ValueError("Key already exists")
+        idx = self._search(key)
+        if idx is not None:
+            self.data[db_index][idx] = value
+        '''
+        pass 
 
     def save(self, path, name):
         filepath = path + name
@@ -61,17 +86,9 @@ class FileDataManager(DataManager):
         for x in self.metadata["search_combine_columns"][db_index]:
             key += self.data[db_index][row][x]
         return key
-    
-    def search_all_keys(self, key, db_index=-1):
-        out = []
-        if db_index == -1:
-            for x in self.data:
-                for y in x:
-                    if y[0] == key:
-                        out.append(y)
-        else:
-            for x in self.data[db_index]:
-                if x[0] == key:
-                    out.append(x)
-        return out
-    
+
+    def _get_key_from_list(self, db_index, list):
+        key = ""
+        for x in self.metadata["search_combine_columns"][db_index]:
+            key += list[x]
+        return key

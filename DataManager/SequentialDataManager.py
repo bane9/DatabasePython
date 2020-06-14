@@ -19,8 +19,9 @@ class SequentialDataManager(FileDataManager):
 
         while start < end: 
             mid = start + (end - start) // 2
-            if self._getkey(db_index, mid) == key: return mid  
-            elif self._getkey(db_index, mid): start = mid + 1
+            search_key = self._getkey(db_index, mid)
+            if search_key == key: return mid  
+            elif search_key: start = mid + 1
             else: end = mid - 1
         
         return None
