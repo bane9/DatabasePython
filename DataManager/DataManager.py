@@ -22,14 +22,11 @@ class DataManager:
     def modify(self, db_index, value, **kwargs):
         raise NotImplementedError()
 
-    def search(self, keypart, row_index = 0, db_index = 0):
-        raise NotImplementedError()
-
     def _search(self, key, db_index = 0):
         raise NotImplementedError()
 
     def save(self, path, name):
         pass
 
-    def load(self, path, name):
+    def load(self, metadata_filepath):
         pass

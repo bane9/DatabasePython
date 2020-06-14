@@ -40,13 +40,6 @@ class FileDataManager(DataManager):
         if idx is not None:
             self.data[db_index][idx] = value
 
-    def search(self, keypart, row_index = 0, db_index = 0):
-        out = []
-        for x in self.data[db_index]:
-            if keypart in x[row_index]:
-                out.append(x)
-        return out
-
     def delete(self, db_index, **kwargs):
         key = ""
         for x in kwargs.values():

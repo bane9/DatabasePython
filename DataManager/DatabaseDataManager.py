@@ -45,20 +45,47 @@ class DatabaseDataManager(DataManager):
         MySqlHandler.db.cursor().execute(query)
         MySqlHandler.db.commit()
 
-    def get(self, key, db_index = 0):
+    def get(self, db_index, **kwargs):
         cursor = MySqlHandler.db.cursor()
-        cursor.execute(f"SELECT * FROM {MySqlHandler.schema}.{self.metadata['database_names'][db_index]} \
-            WHERE {self.metadata['database_column_names'][db_index][0]}='{key}';")
+        if len(kwargs) == 1:
+            key = ""
+            for x in kwargs.values():
+                key = x
+            cursor.execute(f"SELECT * FROM {MySqlHandler.schema}.{self.metadata['database_names'][db_index]} WHERE {self.metadata['database_column_names'][db_index][0]}='{key}';")
+        else:
+            query = f"SELECT * FROM {MySqlHandler.schema}.{self.metadata['database_names'][db_index]} WHERE "
+            for k, v in kwargs.items():
+                query += f"{k} = '{v}' AND "
+            query = query[:-len(" AND ")]
+            cursor.execute(query)
         return cursor.fetchall()
 
-    def delete(self, key, db_index = 0):
-        raise NotImplementedError()
+    def delete(self, db_index, **kwargs):
+        cursor = MySqlHandler.db.cursor()
+        if len(kwargs) == 1:
+            key = ""
+            for x in kwargs.values():
+                key = x
+            cursor.execute(f"DELETE FROM {MySqlHandler.schema}.{self.metadata['database_names'][db_index]} WHERE {self.metadata['database_column_names'][db_index][0]}='{key}';")
+        else:
+            query = f"DELETE FROM {MySqlHandler.schema}.{self.metadata['database_names'][db_index]} WHERE "
+            for k, v in kwargs.items():
+                query += f"{k} = '{v}' AND "
+            query = query[:-len(" AND ")]
+            cursor.execute(query)
+        MySqlHandler.db.commit()
 
-    def modify(self, key, value, db_index = 0):
-        raise NotImplementedError()
+    def modify(self, db_index, value, **kwargs):
+        cursor = MySqlHandler.db.cursor()
+        query = f"UPDATE {MySqlHandler.schema}.{self.metadata['database_names'][db_index]} SET "
+        for i, x in enumerate(self.metadata["database_column_names"][db_index]):
+            query += f" {x}='{value[i]}'"
+            if i < len(value) - 1:
+                query += ","
+        query += " WHERE "
+        for k, v in kwargs.items():
+            query += f"{k} = '{v}' AND "
+        query = query[:-len(" AND ")]
+        cursor.execute(query)
+        MySqlHandler.db.commit()
 
-    def search(self, keypart, row_index = 0, db_index = 0):
-        raise NotImplementedError()
-
-    def search_all_keys(self, key, db_index = -1):
-        raise NotImplementedError()
