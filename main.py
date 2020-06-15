@@ -5,6 +5,7 @@ from PySide2 import QtWidgets, QtGui, QtCore
 import sys
 from WorkspaceWidget import WorkspaceWidget
 from StudentMetadata import student_metadata
+import os
 
 if __name__ == "__main__":
 
@@ -12,6 +13,8 @@ if __name__ == "__main__":
 
     def file_clicked(index):
         try:
+            if not file_system_model.filePath(index).endswith("_metadata.json"):
+                return
             workspace.tables.storage.load_file(file_system_model.filePath(index))
             workspace.tables.metadata = workspace.tables.storage.metadata
             workspace.reset_tables()
@@ -48,18 +51,23 @@ if __name__ == "__main__":
         layout.addWidget(button)
         subWindow.show()
 
-    def add_file(file, parent, file_type):
-        if len(file) < 5 or file[-5:] != ".json":
-            QtWidgets.QErrorMessage(parent).showMessage(f"Target file is not .json extension \n({file})", "Error")
-        elif not workspace.create_file(file, file_type):
-            QtWidgets.QErrorMessage(parent).showMessage(f"Creating the file failed \n({file})", "Error")
-        else:
+    def add_file(filepath, parent, file_type):
+        try:
+            filename = os.path.basename(filepath)
+            path = filename[:-len(filename)]
+            workspace.tables.new_file(path, filename, file_type, student_metadata)
+            workspace.tables.load_file(filepath + "_metadata.json")
+            workspace.tables.metadata = workspace.tables.storage.metadata
+            workspace.reset_tables()
             msg = QtWidgets.QMessageBox()
             msg.setText("Ok")
             msg.setWindowTitle("Ok")
             msg.setIcon(QtWidgets.QMessageBox.Icon().Information)
             msg.exec_()
             parent.close()
+        except Exception as e:
+            print(e)
+            QtWidgets.QErrorMessage(parent).showMessage("Creating the file failed", "Error")
 
     def add_file_menu(index = None):
         subWindow = QtWidgets.QDialog(main_window)
@@ -77,8 +85,8 @@ if __name__ == "__main__":
         seqfh_radio.toggle()
         layout_radio.addWidget(seqfh_radio)
         layout_radio.addWidget(serialfh_radio)
-        button.clicked.connect(lambda ignore : add_file(textBox.text(), subWindow,
-        "seq" if seqfh_radio.isDown() else "serial"))
+        button.clicked.connect(lambda : add_file(textBox.text(), subWindow,
+        "sequential" if seqfh_radio.isDown() else "serial"))
         layout.addWidget(button)
         layout.addLayout(layout_radio)
         subWindow.show()

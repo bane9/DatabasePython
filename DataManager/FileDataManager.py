@@ -88,5 +88,5 @@ class FileDataManager(DataManager):
             key += list[x]
         return key
 
-    def get_all(self, db_index = 0):
+    def get_all(self, db_index):
         return self.data[db_index]

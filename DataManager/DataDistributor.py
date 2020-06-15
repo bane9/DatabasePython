@@ -29,9 +29,11 @@ class DataDistributor:
         else:
             self.db = SequentialDataManager()
         self.db.metadata = metadata
+        self.metadata = metadata
         self.db.load_direct()
         self.metadata["database_names"] = metadata["database_names"]
         self.metadata["database_column_names"] = metadata["database_column_names"]
+        self.metadata["search_combine_columns"] = metadata["search_combine_columns"]
 
     def set_metadata(self, metadata):
         if self.db:
@@ -55,4 +57,3 @@ class DataDistributor:
     def save(self, path, name):
         if self.db is not None and type(self.db) is not DatabaseDataManager:
             self.db.save(path, name)
-    
