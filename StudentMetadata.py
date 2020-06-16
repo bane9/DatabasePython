@@ -2,8 +2,8 @@
 student_metadata = {
     "database_names" : [
         "students",
-        "failed_subjects",
-        "passed_subjects"
+        "passed_subjects",
+        "failed_subjects"
     ],
     "database_column_names" : [
         ["index_no", "name"],

@@ -95,7 +95,20 @@ class WorkspaceWidget(QtWidgets.QWidget):
         db_index = 0
         if not primary:
             db_index = self.tab_widget.currentIndex() + 1
-        row = self.tables[db_index]["table"].selectionModel().selectedRows()[0]
+
+        if not self.tables.primary_table or not self.tables.secondary_tables or\
+             not self.tables[db_index] or not self.tables[db_index]["table"]:
+            return
+
+        self.tables[db_index]["table"].selectionModel()
+
+        row = self.tables[db_index]["table"].selectionModel().selectedRows()
+        if row:
+            row = row[0]
+
+        if not row:
+            return
+
         self.tables[db_index]["data"].delete(row.row())
         if self.tables[db_index]["data"].localdata:
             self._primary_selected(QtCore.QModelIndex())

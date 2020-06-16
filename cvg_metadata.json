@@ -1,8 +1,8 @@
 {
  "database_names": [
   "students",
-  "failed_subjects",
-  "passed_subjects"
+  "passed_subjects",
+  "failed_subjects"
  ],
  "database_column_names": [
   [
@@ -36,5 +36,5 @@
   ]
  ],
  "type": "serial",
- "linked_file": "a_data.json"
+ "linked_file": "cvg_data.json"
 }
