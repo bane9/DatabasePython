@@ -40,7 +40,7 @@ class WorkspaceWidget(QtWidgets.QWidget):
 
         removePrimaryButton = QtWidgets.QPushButton()
         removePrimaryButton.setText("Remove")
-        removePrimaryButton.clicked.connect(lambda : None)
+        removePrimaryButton.clicked.connect(lambda : self._remove_row())
 
         horizontalPrimaryTable.addWidget(addSecondaryButton)
         horizontalPrimaryTable.addWidget(removePrimaryButton)
@@ -59,7 +59,7 @@ class WorkspaceWidget(QtWidgets.QWidget):
 
         removeSubjectsButton = QtWidgets.QPushButton()
         removeSubjectsButton.setText("Remove")
-        removeSubjectsButton.clicked.connect(lambda : None)
+        removeSubjectsButton.clicked.connect(lambda : self._remove_row(False))
 
         horizontalSecondaryTable.addWidget(addSecondaryButton)
         horizontalSecondaryTable.addWidget(removeSubjectsButton)
@@ -90,6 +90,19 @@ class WorkspaceWidget(QtWidgets.QWidget):
 
         self.tab_widget.setTabsClosable(True)
     
+
+    def _remove_row(self, primary = True):
+        db_index = 0
+        if not primary:
+            db_index = self.tab_widget.currentIndex() + 1
+        row = self.tables[db_index]["table"].selectionModel().selectedRows()[0]
+        self.tables[db_index]["data"].delete(row.row())
+        if self.tables[db_index]["data"].localdata:
+            self._primary_selected(QtCore.QModelIndex())
+        else:
+            while self.tab_widget.count():
+                self.tab_widget.removeTab(0)
+
     def _add_dialog(self, primary = True):
         if not primary and not self.primary_key:
             return
