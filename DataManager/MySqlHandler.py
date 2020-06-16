@@ -2,9 +2,9 @@ import mysql.connector
 
 class MySqlHandler:
     db = None
-    __host = ""
-    __username = ""
-    __password = ""
+    host = ""
+    username = ""
+    password = ""
     schema = "3vsZG0Al7YM84Qmc"
 
     @staticmethod
@@ -19,12 +19,12 @@ class MySqlHandler:
 
     @staticmethod
     def connect(hostname : str, username : str, passw : str) -> None:
-        if MySqlHandler.__host == hostname and MySqlHandler.__username == username and MySqlHandler.__password == passw \
+        if MySqlHandler.host == hostname and MySqlHandler.username == username and MySqlHandler.password == passw \
             and MySqlHandler.isConnected():
             return
         else:
             MySqlHandler.db = mysql.connector.connect(host=hostname, user=username, password=passw)
-            MySqlHandler.__host = hostname
-            MySqlHandler.__username = username
-            MySqlHandler.__password = passw
+            MySqlHandler.host = hostname
+            MySqlHandler.username = username
+            MySqlHandler.password = passw
 

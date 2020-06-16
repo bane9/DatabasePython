@@ -1,0 +1,7 @@
+{
+ "type": "sql",
+ "host": "127.0.0.1",
+ "username": "root",
+ "password": "pass",
+ "schema": "uni_proj"
+}

@@ -5,7 +5,10 @@ from PySide2 import QtWidgets, QtGui, QtCore
 import sys
 from WorkspaceWidget import WorkspaceWidget
 from StudentMetadata import student_metadata
+from MySqlHandler import MySqlHandler
+
 import os
+import json
 
 if __name__ == "__main__":
 
@@ -105,8 +108,22 @@ if __name__ == "__main__":
     main_window.setWindowTitle("Editor")
 
     def closeEvent(event):
-        workspace.tables.save_all()
-        event.accept()
+        try:
+            if workspace.tables.storage.db:    
+                workspace.tables.save_all()
+                state = workspace.tables.storage.get_state()
+                row = workspace.tables[0]["table"].selectionModel().selectedRows()
+                if row and row[0]:
+                    state["primary_selected"] = row[0].row()
+                    state["secondary_tab_index"] = workspace.tab_widget.currentIndex()
+
+                with open("state.json", "w") as F:
+                    json.dump(state, F, indent=1)
+
+        except Exception as e:
+            print(e)
+        finally:
+            event.accept()
 
     main_window.closeEvent = closeEvent
 
@@ -155,4 +172,22 @@ if __name__ == "__main__":
     main_window.setCentralWidget(central_widget)
     main_window.setStatusBar(status_bar)
     main_window.show()
+
+    try:
+        state = {}
+        with open("state.json", "r") as F:
+            state = json.load(F)
+        if state["type"] == "sql":
+            workspace.tables.database_login(state["host"], state["username"], \
+                state["password"], student_metadata)
+        else:
+            workspace.tables.storage.load_file(state["metadata_path"])
+            workspace.tables.metadata = workspace.tables.storage.metadata
+        workspace.reset_tables()
+        if "primary_selected" in state:
+            workspace._primary_selected(state["primary_selected"])
+            workspace.tab_widget.setCurrentIndex(state["secondary_tab_index"])
+    except Exception as e:
+        print(f"Loading config file failed:\n\t{e}")
+
     sys.exit(app.exec_())

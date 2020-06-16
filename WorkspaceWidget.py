@@ -79,7 +79,11 @@ class WorkspaceWidget(QtWidgets.QWidget):
         self.tab_widget.setTabsClosable(False)
 
     def _primary_selected(self, index):
-        self.primary_key = self.tables[0]["data"].localdata[index.row()][0]
+        
+        if type(index) is QtCore.QModelIndex:
+            index = index.row()
+
+        self.primary_key = self.tables[0]["data"].localdata[index][0]
         self.tables.form_secondary_tables(self.primary_key)
 
         while self.tab_widget.count():

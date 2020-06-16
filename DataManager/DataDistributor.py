@@ -66,3 +66,17 @@ class DataDistributor:
         
         if self.db is not None and type(self.db) is not DatabaseDataManager:
             self.db.save(self.current_filepath, self.current_filename)
+    
+    def get_state(self):
+        state = {}
+        if type(self.db) is DatabaseDataManager:
+            state["type"] = "sql"
+            state["host"] = MySqlHandler.host
+            state["username"] = MySqlHandler.username
+            state["password"] = MySqlHandler.password
+            state["schema"] = MySqlHandler.schema
+        else:
+            state["type"] = "serial" if type(self.db) is SerialDataManager else "sequential"
+            state["metadata_path"] = self.current_filepath + self.current_filename + "_metadata.json"
+        
+        return state
