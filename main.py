@@ -104,6 +104,12 @@ if __name__ == "__main__":
     main_window.resize(640, 480)
     main_window.setWindowTitle("Editor")
 
+    def closeEvent(event):
+        workspace.tables.save_all()
+        event.accept()
+
+    main_window.closeEvent = closeEvent
+
     menu_bar = QtWidgets.QMenuBar(main_window)
     
     file_menu = QtWidgets.QMenu("File", menu_bar)
