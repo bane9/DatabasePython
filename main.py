@@ -15,6 +15,7 @@ if __name__ == "__main__":
         try:
             if not file_system_model.filePath(index).endswith("_metadata.json"):
                 return
+            workspace.tables.save_all()
             workspace.tables.storage.load_file(file_system_model.filePath(index))
             workspace.tables.metadata = workspace.tables.storage.metadata
             workspace.reset_tables()
@@ -25,6 +26,13 @@ if __name__ == "__main__":
         try:
             workspace.tables.database_login(host, username, passw, student_metadata)
             workspace.reset_tables()
+            msg = QtWidgets.QMessageBox()
+            msg.setText("Ok")
+            msg.setWindowTitle("Ok")
+            msg.setIcon(QtWidgets.QMessageBox.Icon().Information)
+            msg.exec_()
+            if parent:
+                parent.close()
         except Exception as e:
             print(e)
 

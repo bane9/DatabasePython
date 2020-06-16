@@ -5,7 +5,7 @@ class MySqlHandler:
     __host = ""
     __username = ""
     __password = ""
-    schema = "uni_proj_189"
+    schema = "3vsZG0Al7YM84Qmc"
 
     @staticmethod
     def isConnected() -> bool:

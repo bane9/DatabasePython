@@ -2,7 +2,7 @@ from SerialDataManager import SerialDataManager
 from SequentialDataManager import SequentialDataManager
 from DatabaseDataManager import DatabaseDataManager
 from MySqlHandler import MySqlHandler
-from os import path
+import os
 import json
 
 class DataDistributor:
@@ -14,6 +14,8 @@ class DataDistributor:
 	        "database_column_names" : [],
             "search_combine_columns" : []
         }
+        self.current_filepath = ""
+        self.current_filename = ""
 
     def connect_to_sql(self, host, username, password):
         MySqlHandler.connect(host, username, password)
@@ -34,6 +36,9 @@ class DataDistributor:
         self.metadata["database_names"] = metadata["database_names"]
         self.metadata["database_column_names"] = metadata["database_column_names"]
         self.metadata["search_combine_columns"] = metadata["search_combine_columns"]
+        self.current_filename = os.path.basename(metadata_filepath)
+        self.current_filepath = self.current_filename[:-len(self.current_filename)]
+        self.current_filename = self.current_filename[:-len("_metadata.json")]
 
     def set_metadata(self, metadata):
         if self.db:
@@ -54,6 +59,10 @@ class DataDistributor:
         else:
             self.db = SequentialDataManager()
     
-    def save(self, path, name):
+    def save(self, **kwargs):
+        if kwargs:
+            self.current_filepath = kwargs["path"]
+            self.current_filename = kwargs["name"]
+        
         if self.db is not None and type(self.db) is not DatabaseDataManager:
-            self.db.save(path, name)
+            self.db.save(self.current_filepath, self.current_filename)

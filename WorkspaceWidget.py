@@ -21,10 +21,15 @@ class WorkspaceWidget(QtWidgets.QWidget):
         self.primary_key = ""
 
     def reset_tables(self):
-        for i in reversed(range(self.main_layout.count())): 
-            self.main_layout.itemAt(i).layout().deleteLater()
-        
-        self.tables.form_priamry_table()
+        for i in reversed(range(self.main_layout.count())):
+            layout = self.main_layout.itemAt(i).layout()
+            if layout is not None:
+                layout.deleteLater()
+            widget = self.main_layout.itemAt(i).widget()
+            if widget is not None:
+                widget.deleteLater()
+
+        self.tables.form_primary_table()
 
         self.tables[0]["table"].clicked.connect(self._primary_selected)
 
@@ -67,16 +72,23 @@ class WorkspaceWidget(QtWidgets.QWidget):
         self.main_layout.addLayout(verticalSecondaryTable)
         self.setLayout(self.main_layout)
 
+        while self.tab_widget.count():
+            self.tab_widget.removeTab(0)
+
+        self.tab_widget.addTab(QtWidgets.QTableView(None), "")
+        self.tab_widget.setTabsClosable(False)
+
     def _primary_selected(self, index):
-        primary = self.tables[0]["data"].localdata[index.row()]
-        self.primary_key = primary[0]
-        self.tables.form_secondary_table(self.primary_key)
+        self.primary_key = self.tables[0]["data"].localdata[index.row()][0]
+        self.tables.form_secondary_tables(self.primary_key)
 
         while self.tab_widget.count():
             self.tab_widget.removeTab(0)
 
         for x in self.tables.secondary_tables:
             self.tab_widget.addTab(x["table"], x["table_name"])
+
+        self.tab_widget.setTabsClosable(True)
     
     def _add_dialog(self, primary = True):
         if not primary and not self.primary_key:

@@ -9,10 +9,11 @@ class DbTableModel(QtCore.QAbstractTableModel):
         self.db_index = db_index
         self.foreign_key = foreign_key
     
-    def set_local_info(self, metadata, storage):
+    def set_local_info(self, metadata, data_distributor):
         self.beginResetModel()
         self.metadata = metadata
-        self.storage = storage
+        self.data_distributor = data_distributor
+        self.storage = data_distributor.db
         self.fetchlocal()
         self.endResetModel()
 

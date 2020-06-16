@@ -35,6 +35,6 @@
    1
   ]
  ],
- "type": "sequential",
+ "type": "serial",
  "linked_file": "asd_data.json"
 }

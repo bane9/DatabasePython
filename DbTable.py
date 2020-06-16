@@ -5,6 +5,8 @@ from DbTableModel import DbTableModel
 from DataDistributor import DataDistributor
 from PySide2 import QtWidgets, QtGui, QtCore
 
+import os
+
 class DbTable:
 
     def __init__(self):
@@ -12,12 +14,10 @@ class DbTable:
         self.metadata = None
         self.primary_table = {}
         self.secondary_tables = []
-        self.current_filepath = ""
-        self.current_filename = ""
     
     def load_file(self, metadata_filepath : str):
         if self.storage is not None:
-            self.storage.save(self.current_filepath, self.current_filename)
+            self.storage.save()
         self.storage.load_file(metadata_filepath)
         self.metadata = self.storage.metadata
 
@@ -31,37 +31,38 @@ class DbTable:
         return self.primary_table if index == 0 else self.secondary_tables[index - 1]
 
     def new_file(self, path, name, data_type, metadata):
-        self.current_filepath = path
-        self.current_filename = name
-        self.storage.new(data_type)
-        self.storage.set_metadata(metadata)
-        self.metadata = metadata
+        temp = DataDistributor()
+        temp.new(data_type)
+        temp.set_metadata(metadata)
+        temp.metadata = metadata
+        temp.save(path=path, name=name)
     
-    def form_priamry_table(self, table_parnet = None, model_parent = None):
+    def save_all(self):
         if self.primary_table:
-            self.primary_table["data"].storage.save(self.current_filepath, self.current_filename)
+            self.primary_table["data"].data_distributor.save()
         
         for x in self.secondary_tables:
-            x["data"].storage.save(self.current_filepath, self.current_filename)
+            x["data"].data_distributor.save()
 
+    def form_primary_table(self, table_parnet = None, model_parent = None):
         self.primary_table = {}
 
         self.primary_table["table_name"] = self.metadata["database_names"][0]
         self.primary_table["data"] = DbTableModel(0, model_parent)
-        self.primary_table["data"].set_local_info(self.metadata, self.storage.db)
+        self.primary_table["data"].set_local_info(self.metadata, self.storage)
         self.primary_table["table"] = QtWidgets.QTableView(table_parnet)
         self.primary_table["table"].setSelectionBehavior(QtWidgets.QAbstractItemView.SelectRows)
         self.primary_table["table"].setSelectionMode(QtWidgets.QAbstractItemView.SingleSelection)
         self.primary_table["table"].setModel(self.primary_table["data"])
 
-    def form_secondary_table(self, primary_key, table_parnet = None, model_parent = None):
+    def form_secondary_tables(self, primary_key, table_parnet = None, model_parent = None):
         self.secondary_tables = []
         
         for i in range(1, len(self.metadata["database_names"])):
             table = {}
             table["table_name"] = self.metadata["database_names"][i]
-            table["data"] = DbTableModel(i, model_parent)
-            table["data"].set_local_info(self.metadata, self.storage.db)
+            table["data"] = DbTableModel(i, model_parent, primary_key)
+            table["data"].set_local_info(self.metadata, self.storage)
             table["table"] = QtWidgets.QTableView(table_parnet)
             table["table"].setSelectionBehavior(QtWidgets.QAbstractItemView.SelectRows)
             table["table"].setSelectionMode(QtWidgets.QAbstractItemView.SingleSelection)
