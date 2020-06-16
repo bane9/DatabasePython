@@ -185,6 +185,7 @@ if __name__ == "__main__":
             workspace.tables.metadata = workspace.tables.storage.metadata
         workspace.reset_tables()
         if "primary_selected" in state:
+            workspace.tables[0]["table"].selectRow(state["primary_selected"])
             workspace._primary_selected(state["primary_selected"])
             workspace.tab_widget.setCurrentIndex(state["secondary_tab_index"])
     except Exception as e:

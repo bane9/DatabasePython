@@ -1,7 +1,6 @@
 {
- "type": "sql",
- "host": "127.0.0.1",
- "username": "root",
- "password": "pass",
- "schema": "uni_proj"
+ "type": "serial",
+ "metadata_path": "cvg_metadata.json",
+ "primary_selected": 1,
+ "secondary_tab_index": 1
 }
