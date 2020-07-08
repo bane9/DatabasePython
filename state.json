@@ -1,6 +1,6 @@
 {
  "type": "serial",
  "metadata_path": "cvg_metadata.json",
- "primary_selected": 1,
- "secondary_tab_index": 1
+ "primary_selected": 0,
+ "secondary_tab_index": 0
 }
